@@ -21,6 +21,7 @@ Usage
 
 <div class="leader"></div> 
 
+```javascript
 $(document).ready(function(){
     $('.leader').leader({
         inputs: [
@@ -34,6 +35,7 @@ $(document).ready(function(){
         }
     });
 });
+```
 
 Notes
 =====
