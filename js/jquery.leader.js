@@ -291,6 +291,8 @@ $.fn.leader = function(options) {
             // Focus cursor on input
             
             replacement.find('.'+npfx+'input').focus();
+            
+            ldr.moveCursorToEnd(replacement.find('.'+npfx+'input'));
           
         },
         
@@ -376,6 +378,24 @@ $.fn.leader = function(options) {
         save: function(item){
             output[item.id] = item;
             options.onSave(output);
+        },
+        
+        
+        /**
+        * Move cursor to end
+        * Moves the cursor to the end of an input (for Firefox and IE)
+        */
+        
+        
+        moveCursorToEnd: function(el) {
+            if (typeof el.selectionStart == "number") {
+                el.selectionStart = el.selectionEnd = el.value.length;
+            } else if(typeof el.createTextRange != "undefined"){
+                el.focus();
+                var range = el.createTextRange();
+                range.collapse(false);
+                range.select();
+            }
         }
         
 
