@@ -19,7 +19,9 @@ http://demo.peterbailey.eu/Leader.js/example.html
 Usage
 =====
 
+```html
 <div class="leader"></div> 
+```
 
 ```javascript
 $(document).ready(function(){
