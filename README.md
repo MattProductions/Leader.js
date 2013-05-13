@@ -43,3 +43,4 @@ Notes
 =====
 
 - The default android keyboard will close when enter is pressed.
+- Leader.js uses the Live function so if you're using jQuery 1.9 or up you'll need to use the Migration plugin (https://github.com/jquery/jquery-migrate)
