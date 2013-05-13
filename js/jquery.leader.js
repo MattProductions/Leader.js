@@ -4,6 +4,7 @@ $.fn.leader = function(options) {
 
     var defaults = {
         inputs: [{label: 'Label', type: 'text'}],
+        name_prefix: 'lrd_',
         onSave: function(){}
     };
     var options = $.extend(defaults, options);
@@ -13,6 +14,7 @@ $.fn.leader = function(options) {
     var insert_cursor = 0;
     var selected_item = null;
     var output = [];
+    var npfx = options.name_prefix;
     
     /**
     * Initial
@@ -23,7 +25,7 @@ $.fn.leader = function(options) {
         
         // Load first insert item
         
-        inp.populate({
+        ldr.populate({
             label: options.inputs[insert_cursor]['label'],
             type: options.inputs[insert_cursor]['type']
         });
@@ -51,13 +53,13 @@ $.fn.leader = function(options) {
             element.preventDefault();
             
             // User presses enter on inserting field
-            if(obj.find('.item.selected').hasClass('inserting')){
-                inp.insert(obj);
+            if(obj.find('.'+npfx+'item.'+npfx+'selected').hasClass(npfx+'inserting')){
+                ldr.insert(obj);
             }
             
             // User presses enter on editing field
-            if(obj.find('.item.selected').hasClass('editing')){
-                inp.edit(obj);
+            if(obj.find('.'+npfx+'item.'+npfx+'selected').hasClass(npfx+'editing')){
+                ldr.edit(obj);
             }
             
         }
@@ -79,10 +81,10 @@ $.fn.leader = function(options) {
         if(keyCode == 8){
             
             // User presses backspace on an empty field
-            if(obj.find('.item.selected .input').val() == ''){
+            if(obj.find('.'+npfx+'item.'+npfx+'selected .'+npfx+'input').val() == ''){
                 element.preventDefault();
                 // Start editing previous input
-                inp.archive_to_edit({obj: obj.find('.item.selected').prev()});
+                ldr.archive_to_edit({obj: obj.find('.'+npfx+'item.'+npfx+'selected').prev()});
             }
             
         }
@@ -93,13 +95,13 @@ $.fn.leader = function(options) {
             element.preventDefault();
             
             // User presses enter on inserting field
-            if(obj.find('.item.selected').hasClass('inserting')){
-                inp.insert(obj);
+            if(obj.find('.'+npfx+'item.'+npfx+'selected').hasClass(npfx+'inserting')){
+                ldr.insert(obj);
             }
             
             // User presses enter on editing field
-            if(obj.find('.item.selected').hasClass('editing')){
-                inp.edit(obj);
+            if(obj.find('.'+npfx+'item.'+npfx+'selected').hasClass(npfx+'editing')){
+                ldr.edit(obj);
             }
             
         }
@@ -112,8 +114,8 @@ $.fn.leader = function(options) {
     */
     
     
-    $('.item.archived').live('click', function(){
-        inp.archive_to_edit({obj: $(this)});
+    $('.'+npfx+'item.'+npfx+'archived').live('click', function(){
+        ldr.archive_to_edit({obj: $(this)});
     });
     
     
@@ -122,9 +124,9 @@ $.fn.leader = function(options) {
     */
     
     
-    $('.item.editing').live('click', function(){
-        obj.find('.item.selected').removeClass('selected');
-        $(this).addClass('selected').find('.input').focus();
+    $('.'+npfx+'item.'+npfx+'editing').live('click', function(){
+        obj.find('.'+npfx+'item.'+npfx+'selected').removeClass(npfx+'selected');
+        $(this).addClass(npfx+'selected').find('.'+npfx+'input').focus();
     });
     
     
@@ -133,9 +135,9 @@ $.fn.leader = function(options) {
     */
     
     
-    $('.item.inserting').live('click', function(){
-        obj.find('.item.selected').removeClass('selected');
-        $(this).addClass('selected').find('.input').focus();
+    $('.'+npfx+'item.'+npfx+'inserting').live('click', function(){
+        obj.find('.'+npfx+'item.'+npfx+'selected').removeClass(npfx+'selected');
+        $(this).addClass(npfx+'selected').find('.'+npfx+'input').focus();
     });
     
     
@@ -144,7 +146,7 @@ $.fn.leader = function(options) {
     */
     
     
-    var inp = {
+    var ldr = {
         
         
         /**
@@ -156,17 +158,17 @@ $.fn.leader = function(options) {
         insert: function(obj){
             
             // Save to output JSON object
-            inp.save({
+            ldr.save({
                 id: insert_cursor,
                 label: options.inputs[insert_cursor]['label'],
-                value: obj.find('.item.inserting .input').val(),
+                value: obj.find('.'+npfx+'item.'+npfx+'inserting .'+npfx+'input').val(),
                 type: options.inputs[insert_cursor]['type']
             });
             
             // Add to archive
-            inp.archive({
+            ldr.archive({
                 label: options.inputs[insert_cursor]['label'],
-                value: inp.format_value({value: obj.find('.item.inserting .input').val(), type: options.inputs[insert_cursor]['type']}),
+                value: ldr.format_value({value: obj.find('.'+npfx+'item.'+npfx+'inserting .'+npfx+'input').val(), type: options.inputs[insert_cursor]['type']}),
                 type: options.inputs[insert_cursor]['type']
             });
             
@@ -175,7 +177,7 @@ $.fn.leader = function(options) {
             // Start new insertion field
             
             if(options.inputs[insert_cursor] != undefined){
-                inp.prep_next({
+                ldr.prep_next({
                     label: options.inputs[insert_cursor]['label'],
                     type: options.inputs[insert_cursor]['type']
                 });
@@ -183,7 +185,7 @@ $.fn.leader = function(options) {
             
             // Hide inserting if form completed
             
-            if(options.inputs[insert_cursor] == undefined){ obj.find('.item.inserting').hide(); }
+            if(options.inputs[insert_cursor] == undefined){ obj.find('.'+npfx+'item.'+npfx+'inserting').hide(); }
             
         },
         
@@ -197,15 +199,15 @@ $.fn.leader = function(options) {
         edit: function(obj){
           
             // Update JSON object
-            inp.save({
-                id: obj.find('.item.selected').attr('data-id'),
-                label: obj.find('.item.selected .label').html(),
-                value: obj.find('.item.selected .input').val(),
-                type: obj.find('.item.selected').attr('data-type')
+            ldr.save({
+                id: obj.find('.'+npfx+'item.'+npfx+'selected').attr('data-id'),
+                label: obj.find('.'+npfx+'item.'+npfx+'selected .'+npfx+'label').html(),
+                value: obj.find('.'+npfx+'item.'+npfx+'selected .'+npfx+'input').val(),
+                type: obj.find('.'+npfx+'item.'+npfx+'selected').attr('data-type')
             });
             
-            inp.edit_to_archive({obj: obj.find('.item.selected')});
-            inp.focus_next();
+            ldr.edit_to_archive({obj: obj.find('.'+npfx+'item.'+npfx+'selected')});
+            ldr.focus_next();
             
         },
         
@@ -217,9 +219,10 @@ $.fn.leader = function(options) {
         
         
         archive: function(options){
-            $('<div class="item archived" data-type="' + options.type + '" data-id="' + insert_cursor + '" />').insertBefore(obj.find('.item.inserting'))
-            .append($('<div class="label" />').html(options.label))
-            .append($('<div class="value" />').html(options.value));
+            $('<div class="'+npfx+'item '+npfx+'archived" data-type="' + options.type + '" data-id="' + insert_cursor + '" />')
+            .insertBefore(obj.find('.'+npfx+'item.'+npfx+'inserting'))
+            .append($('<div class="'+npfx+'label" />').html(options.label))
+            .append($('<div class="'+npfx+'value" />').html(options.value));
         },
         
         
@@ -230,9 +233,9 @@ $.fn.leader = function(options) {
         
         
         populate: function(options){
-            $('<div class="item inserting" />').appendTo(obj)
-            .append($('<div class="label" />').html(options.label))
-            .append($('<input type="' + options.type + '" class="input" id="input" />').html(options.value));
+            $('<div class="'+npfx+'item '+npfx+'inserting" />').appendTo(obj)
+            .append($('<div class="'+npfx+'label" />').html(options.label))
+            .append($('<input type="' + options.type + '" class="'+npfx+'input" id="input" />').html(options.value));
         },
         
         
@@ -244,8 +247,8 @@ $.fn.leader = function(options) {
         
         prep_next: function(options){
                 
-                obj.find('.item.inserting .label').html(options.label);
-                obj.find('.item.inserting .input').val('');
+                obj.find('.'+npfx+'item.'+npfx+'inserting .'+npfx+'label').html(options.label);
+                obj.find('.'+npfx+'item.'+npfx+'inserting .'+npfx+'input').val('');
                 
                 // jQuery blocks attempts to do this as legacy IE versions don't like it, so we'll do it with pure js instead
                 e = document.getElementById('input');
@@ -262,12 +265,12 @@ $.fn.leader = function(options) {
         
         archive_to_edit: function(options){
             
-            obj.find('.item.selected').removeClass('selected');
+            obj.find('.'+npfx+'item.'+npfx+'selected').removeClass(npfx+'selected');
             
             // Get data
             
-            var label = options.obj.find('.label').html();
-            var value = options.obj.find('.value').html();
+            var label = options.obj.find('.'+npfx+'label').html();
+            var value = options.obj.find('.'+npfx+'value').html();
             var type = options.obj.attr('data-type');
             var id = options.obj.attr('data-id');
             
@@ -277,9 +280,9 @@ $.fn.leader = function(options) {
             
             // Build replacement
             
-            var replacement = $('<div class="item editing selected" data-type="' + type + '" data-id="' + id + '" />')
-            .append($('<div class="label" />').html(label))
-            .append($('<input type="' + type + '" class="input" />').val(value));
+            var replacement = $('<div class="'+npfx+'item '+npfx+'editing '+npfx+'selected" data-type="' + type + '" data-id="' + id + '" />')
+            .append($('<div class="'+npfx+'label" />').html(label))
+            .append($('<input type="' + type + '" class="'+npfx+'input" />').val(value));
             
             // Replace
             
@@ -287,7 +290,7 @@ $.fn.leader = function(options) {
             
             // Focus cursor on input
             
-            replacement.find('.input').focus();
+            replacement.find('.'+npfx+'input').focus();
           
         },
         
@@ -302,16 +305,16 @@ $.fn.leader = function(options) {
             
             // Get data
             
-            var label = options.obj.find('.label').html();
-            var value = options.obj.find('.input').val();
+            var label = options.obj.find('.'+npfx+'label').html();
+            var value = options.obj.find('.'+npfx+'input').val();
             var type = options.obj.attr('data-type');
             var id = options.obj.attr('data-id');
             
             // Build replacement
             
-            var replacement = $('<div class="item archived" data-type="' + type + '" data-id="' + id + '" />')
-            .append($('<div class="label" />').html(label))
-            .append($('<div class="value" />').html(inp.format_value({value: value, type: type})));
+            var replacement = $('<div class="'+npfx+'item '+npfx+'archived" data-type="' + type + '" data-id="' + id + '" />')
+            .append($('<div class="'+npfx+'label" />').html(label))
+            .append($('<div class="'+npfx+'value" />').html(ldr.format_value({value: value, type: type})));
             
             // Replace
             
@@ -328,12 +331,12 @@ $.fn.leader = function(options) {
         
         focus_next: function(){
             
-            obj.find('.item.selected').removeClass('selected');
-            if(obj.find('.item.editing').length > 0){
-                obj.find('.item.editing:first').addClass('selected').find('.input').focus();
+            obj.find('.'+npfx+'item.'+npfx+'selected').removeClass(npfx+'selected');
+            if(obj.find('.'+npfx+'item.'+npfx+'editing').length > 0){
+                obj.find('.'+npfx+'item.'+npfx+'editing:first').addClass(npfx+'selected').find('.'+npfx+'input').focus();
             }
-            else if(obj.find('.item.inserting').length > 0){
-                obj.find('.item.inserting').addClass('selected').find('.input').focus();
+            else if(obj.find('.'+npfx+'item.'+npfx+'inserting').length > 0){
+                obj.find('.'+npfx+'item.'+npfx+'inserting').addClass(npfx+'selected').find('.'+npfx+'input').focus();
             }
             
         },
